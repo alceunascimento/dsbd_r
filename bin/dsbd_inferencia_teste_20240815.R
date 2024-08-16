@@ -1,4 +1,91 @@
-# QUESTAO ----
+# QUESTAO 1 ----
+
+library(tibble)
+
+# Criando o tibble com os dados fornecidos na figura
+dados <- tibble(
+  d = c(10, 40, 70, 10, 45, 75, 15, 50, 80, 20, 50, 85, 25, 55, 90, 30, 60, 90, 30, 65, 35, 70),
+  t = c(0.24, 0.36, 0.46, 0.25, 0.40, 0.48, 0.28, 0.43, 0.51, 0.29, 0.41, 0.52, 0.33, 0.45, 0.52, 0.33, 0.44, 0.55, 0.33, 0.46, 0.36, 0.48)
+)
+
+# Exibindo o tibble
+print(dados)
+plot(dados$d ~ dados$t)
+plot(dados)
+
+dados$sqrtd <- sqrt(dados$d)
+
+plot(dados$t ~ dados$sqrtd, col = "black", pch = 19)
+
+
+# base plot
+plot(dados$t ~ dados$sqrtd, col = "black", pch = 19)
+
+# modelo (1) y = beta * x
+dados$beta <- dados$t / dados$sqrtd
+beta1 <- mean(dados$beta)
+curve(beta1 * x, add = TRUE, col = "grey", lwd = 2)
+
+# modelo (2) y = beta * x + erro
+soma_produto_xy <- sum(dados$sqrtd * dados$t)
+soma_x2 <- sum(dados$sqrtd^2)
+beta2 <- soma_produto_xy / soma_x2
+abline(a = 0, b = beta2, col = "green", lwd = 2)
+
+# modelo (3) regressao linear
+modelo <- lm(dados$t ~ dados$sqrtd)
+abline(modelo, col = "blue", lwd = 2)
+summary(modelo)
+
+modelo$coefficients[2]
+
+g_estimado <- 2 / (modelo$coefficients[2]^2)
+g_estimado
+
+confint(modelo)
+
+# Obtenção do intervalo de confiança para o coeficiente sqrt(2/g)
+confint_coef <- confint(modelo)[2, ]
+
+# Cálculo do intervalo de confiança para g
+ci_g_lower <- 2 / (confint_coef[2]^2)  # Limite inferior
+ci_g_upper <- 2 / (confint_coef[1]^2)  # Limite superior
+
+# Exibindo o intervalo de confiança para g
+ci_g <- c(ci_g_lower, ci_g_upper)
+names(ci_g) <- c("Lower", "Upper")
+ci_g
+
+
+# equacao de Newton
+g <- 981  # cm/s^2
+newton_t <- sqrt(2/g) * dados$sqrtd
+lines(dados$sqrtd, newton_t, col = "red", lwd = 2)
+
+
+# Ajuste para o gráfico iniciar em (0, 0)
+plot(dados$t ~ dados$sqrtd, col = "black", pch = 19, 
+     xlab = "Sqrt(d)", ylab = "t", 
+     xlim = c(0, max(dados$sqrtd)), ylim = c(0, max(dados$t)))
+curve(beta1 * x, add = TRUE, col = "grey", lwd = 2)
+abline(a = 0, b = beta2, col = "green", lwd = 2)
+abline(modelo, col = "blue", lwd = 2)
+lines(dados$sqrtd, newton_t, col = "red", lwd = 2)
+
+
+
+
+# SOLUCAO 1 ----
+
+
+
+
+
+
+
+
+
+# QUESTAO 4 ----
 # Neste exercício exploramos as ideias centrais da inferencia por verossimilhança.
 # Considere que foram coletados dados sobre o tempo de vida (em min.) de um vírus quando fora de uma célula.
 # 5.33, 7.16, 1.18, 11.57, 4.75, 9.42, 23.33, 7.18, 17.42, 20.09, 0.53, 4.04, 3.82, 3.24 and 20.91
